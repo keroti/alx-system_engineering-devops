@@ -1,2 +1,2 @@
 #!/bin/bash
-echo -e 'ln -s /bin/ls'>__ls__
+echo -e 'cd -s /bin/ls'>__ls__
