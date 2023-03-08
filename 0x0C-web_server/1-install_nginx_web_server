@@ -1,21 +1,26 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# Update package list and upgrade existing packages
-sudo apt-get update
-sudo apt-get -y upgrade
+# Update apt package index
+sudo apt update
 
-# Install nginx web server
-sudo apt-get -y install nginx
+# Install Nginx
+sudo apt install -y nginx
 
-# Configure nginx to listen on port 80
-sudo sed -i 's/listen\s*80;/listen 80 default_server;/g' /etc/nginx/sites-available/default
+# Start Nginx service
+sudo systemctl start nginx
 
-# Restart nginx web server
-sudo service nginx restart
+# Configure Nginx to listen on port 80 and return "Hello World!"
+sudo sh -c "echo 'server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
 
-# Test if nginx is working properly
-if curl -s localhost | grep -q "Hello World!"; then
-    echo "Nginx installation completed successfully."
-else
-    echo "Something went wrong. Please check nginx logs in /var/log/ for more information."
-fi
+    root /var/www/html;
+    index index.html;
+
+    location / {
+        echo \"Hello World!\";
+    }
+}' > /etc/nginx/sites-available/default"
+
+# Restart Nginx service to apply changes
+sudo service restart nginx
