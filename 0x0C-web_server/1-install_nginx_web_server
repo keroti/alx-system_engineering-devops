@@ -23,4 +23,4 @@ sudo sh -c "echo 'server {
 }' > /etc/nginx/sites-available/default"
 
 # Restart Nginx service to apply changes
-sudo service restart nginx
+sudo systemctl restart nginx
