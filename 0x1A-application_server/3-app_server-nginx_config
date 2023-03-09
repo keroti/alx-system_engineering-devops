@@ -1,0 +1,15 @@
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html;
+
+    location / {
+        return 200 "Hello World!
+";
+    }
+    location /airbnb-dynamic/number_odd_or_even {
+        proxy_pass http://0.0.0.0:5001;
+    }
+}
