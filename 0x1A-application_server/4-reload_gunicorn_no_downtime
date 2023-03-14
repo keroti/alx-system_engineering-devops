@@ -1,16 +1,18 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Bash script to reload Gunicorn without downtime
 
-# Find the PID of the master process
-MASTER_PID=$(ps aux | grep '[g]unicorn' | awk '{print $2}')
+# Get the process ID of the Gunicorn master process
+PID=$(ps auxf | grep '[g]unicorn' | awk '{print $2}')
 
-# Send HUP signal to master process
-kill -HUP "$MASTER_PID"
-sleep 1
+# Send the HUP signal to the master process
+kill -HUP $PID
 
-# Wait for the workers to gracefully shut down
-while [ -e "/proc/$MASTER_PID/fd" ]; do
-    sleep 1
-done
+# Wait for the workers to finish serving their current requests before shutting them down
+sleep 5
+
+# Send the TERM signal to the old workers to gracefully shut them down
+kill -TERM $(ps auxf | grep '[g]unicorn: worker' | awk '{print $2}')
 
 # Start new workers with the new code or configuration
-/bin/bash -c "exec /path/to/gunicorn --bind 0.0.0.0:8001 --workers 4 web_flask.0-hello_route:app" &>/dev/null &
+gunicorn <your_arguments_here>
+
