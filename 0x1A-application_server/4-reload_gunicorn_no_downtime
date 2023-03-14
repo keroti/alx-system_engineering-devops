@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 # Gracefully reloads Gunicorn.
 
 # Send SIGHUP signal to gracefully reload Gunicorn
