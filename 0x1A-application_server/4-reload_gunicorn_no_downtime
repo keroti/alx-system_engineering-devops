@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Find the PID of the master process
+MASTER_PID=$(ps aux | grep '[g]unicorn' | awk '{print $2}')
+
+# Send HUP signal to master process
+kill -HUP "$MASTER_PID"
+sleep 1
+
+# Wait for the workers to gracefully shut down
+while [ -e "/proc/$MASTER_PID/fd" ]; do
+    sleep 1
+done
+
+# Start new workers with the new code or configuration
+/bin/bash -c "exec /path/to/gunicorn --bind 0.0.0.0:8001 --workers 4 web_flask.0-hello_route:app" &>/dev/null &
